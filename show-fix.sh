@@ -5,3 +5,4 @@ pip cache purge
 mv venv/pip.conf.bak venv/pip.conf
 pip install -r requirements.txt
 python app.py
+grype venv --name venv
