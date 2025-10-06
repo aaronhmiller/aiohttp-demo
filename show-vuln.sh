@@ -5,4 +5,4 @@ pip cache purge
 mv venv/pip.conf venv/pip.conf.bak
 pip install -r requirements.txt
 python app.py
-grype venv --name venv --fail-on high
+grype venv --name venv | grep -E "^NAME|aiohttp"
