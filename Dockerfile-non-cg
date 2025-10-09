@@ -1,0 +1,42 @@
+FROM cgr.dev/chainguard/python:latest-dev
+
+# Set working directory
+WORKDIR /app
+
+# Create virtual environment
+USER 0
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install runtime dependencies and useful debugging tools
+RUN apk add curl 
+
+COPY private/* private/
+COPY static/* static/
+COPY app.py .
+
+EXPOSE 8080
+ENV HOST=0.0.0.0
+ENV PORT=8080
+
+RUN cat > /app/entrypoint.sh << 'EOF'
+#!/bin/sh
+echo "1. Normal static file access:"
+echo "   docker exec -it <container> curl http://$HOST:$PORT/static/index.html"
+echo "   docker exec -it <container> curl http://$HOST:$PORT/static/style.css"
+echo ""
+echo "2. Path traversal attempts:"
+echo "   docker exec -it <container> curl --path-as-is http://$HOST:$PORT/static/../private/secrets.txt"
+echo ""
+exec python app.py
+EOF
+
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Run the application
+ENTRYPOINT ["/app/entrypoint.sh"]

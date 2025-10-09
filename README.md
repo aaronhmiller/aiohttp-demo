@@ -11,6 +11,19 @@ Run from a Linux machine:
 `show-fix.sh`
 `clean.sh`
 
+## The Docker way
+First, ensure you have a Chainguard library accessing file named `pip.conf.docker` in your `venv` directory
+### Build your containers
+`docker build -f Dockerfile-cg -t aiohttp-fix .`
+`docker build -f Dockerfile-non-cg -t aiohttp-vuln .`
+### Run them
+`docker run --name vuln --rm aiohttp-vuln -p 8080:8080`
+Run the `docker exec -it vuln curl --path-as-is http://0.0.0.0:8080/static/../private/secrets.txt` command and see the secret text indicating the vulnerability is there.
+ctrl-c
+`docker run --name fix --rm aiohttp-fix -p 8080:8080`
+Now run the same command, but point at the fix container name:
+`docker exec -it fix curl --path-as-is http://0.0.0.0:8080/static/../private/secrets.txt`
+And see the 404 that indicates the fix is in place.
 ## To go step-by-step:
 * start your local venv, `source venv/bin/activate`
 * install `pip install aiohttp==3.9.1`
