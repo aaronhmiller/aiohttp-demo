@@ -34,3 +34,12 @@ will show 404
 * move the pip.conf to pip.conf.bak
 * install again and run the app.py
 * it'll show the secret
+## Troubleshooting
+If you see:
+```
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection
+broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0xffff86750850>:
+Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /artifactory/api/pypi/python-all-remediated/simple/aiohttp/
+```
+it usually means the network daemon isn't running.
+try `$> sudo systemctl start systemd-resolved` to fix that.
