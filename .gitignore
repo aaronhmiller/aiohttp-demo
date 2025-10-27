@@ -3,3 +3,4 @@ static/**
 venv/pip.conf
 venv/pip.conf.bak
 venv/pip.conf.docker
+.DS_Store

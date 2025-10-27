@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo systemctl start systemd-resolved
 source venv/bin/activate
 pip uninstall -y -r <(pip freeze)
 pip cache purge
